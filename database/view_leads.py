@@ -7,13 +7,15 @@ DB_PATH = os.path.join(
     "smartlead.db"
 )
 
-conn = sqlite3.connect(DB_PATH)
+def get_all_leads():
+    
+    conn = sqlite3.connect(DB_PATH)
 
-df = pd.read_sql(
-    "SELECT * FROM leads",
-    conn
-)
+    df = pd.read_sql_query(
+        "SELECT * FROM leads",
+        conn
+    )
 
-print(df)
+    conn.close()
 
-conn.close()
+    return df
