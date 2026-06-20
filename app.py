@@ -8,6 +8,18 @@ import asyncio
 if sys.platform == 'win32':
     asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
 
+# ── Auto-install Playwright browsers on Streamlit Cloud ──────────────────────
+import subprocess
+try:
+    subprocess.run(
+        [sys.executable, "-m", "playwright", "install", "chromium"],
+        check=True,
+        capture_output=True
+    )
+except Exception:
+    pass  # Silently continue if already installed or unavailable
+
+
 import os
 import time
 import random

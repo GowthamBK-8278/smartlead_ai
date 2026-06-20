@@ -5,3 +5,6 @@ openpyxl
 plotly
 textblob
 nltk
+instagrapi
+playwright
+requests
