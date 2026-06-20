@@ -4,4 +4,4 @@ numpy
 openpyxl
 plotly
 textblob
-
+nltk
