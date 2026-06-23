@@ -8,3 +8,4 @@ nltk
 instagrapi
 playwright
 requests
+flask

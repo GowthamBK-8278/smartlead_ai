@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartLead AI - Operator Panel</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header-container">
+            <h1 class="header-title">🚀 SmartLead AI</h1>
+            <p class="header-subtitle">Real Social Media Comment Scraper & Automated DM Outreach Platform</p>
+        </header>
+
+        <!-- Main Content Layout -->
+        <div class="main-content">
+            <!-- Sidebar Navigation -->
+            <nav class="sidebar">
+                <ul class="nav-list" id="nav-list">
+                    <li class="nav-item active" data-target="tab-account">🔐 Account Setup</li>
+                    <li class="nav-item" data-target="tab-scrape">🔍 Scrape Comments</li>
+                    <li class="nav-item" data-target="tab-dms">📤 Send DMs</li>
+                    <li class="nav-item" data-target="tab-history">📋 Lead History</li>
+                </ul>
+            </nav>
+
+            <!-- Content Area -->
+            <main class="content-area">
+                <!-- ========================================== -->
+                <!-- TAB 1: ACCOUNT SETUP -->
+                <!-- ========================================== -->
+                <section id="tab-account" class="tab-content active">
+                    <h2>🔐 Social Media Accounts Configuration</h2>
+                    <p class="section-desc">Configure your dedicated scraper accounts and verify connections below.</p>
+                    
+                    <div class="split-layout">
+                        <!-- Instagram Column -->
+                        <div class="card col-ig">
+                            <h3>📸 Instagram Scraper Session</h3>
+                            <p>Instagram uses <strong>manual browser login</strong> to safely capture session cookies — just like Facebook.</p>
+
+                            <div class="status-indicator" id="ig-status">
+                                Status: <span class="status-disconnected">🔴 No Session Found</span>
+                            </div>
+
+                            <p class="fb-instruction">
+                                Clicking the button below will open a visible Chromium window. Navigate to Instagram and log in manually. The window will close automatically and connect your account as soon as you're logged in.
+                            </p>
+
+                            <div class="btn-group vertical">
+                                <button class="btn btn-primary" id="btn-ig-launch">🌐 Launch IG Login Window</button>
+                                <button class="btn btn-danger hidden" id="btn-ig-disconnect">🔌 Disconnect Instagram</button>
+                            </div>
+
+                            <div id="ig-error" class="error-text hidden"></div>
+                        </div>
+
+                        <!-- Facebook Column -->
+                        <div class="card col-fb">
+                            <h3>👥 Facebook Scraper Session</h3>
+                            <p>Facebook uses <strong>manual browser login (Option B)</strong> to safely capture session cookies.</p>
+                            
+                            <div class="status-indicator" id="fb-status">
+                                Status: <span class="status-disconnected">🔴 No Session Found</span>
+                            </div>
+
+                            <p class="fb-instruction">
+                                Clicking the button below will open a visible Chromium window. Navigate to Facebook, log into your scraper account manually, and wait. The window will close automatically and save your session as soon as you're logged in.
+                            </p>
+
+                            <div class="btn-group vertical">
+                                <button class="btn btn-primary" id="btn-fb-launch">🌐 Launch FB Login Window</button>
+                                <button class="btn btn-secondary" id="btn-fb-test">🧪 Test FB Connection</button>
+                                <button class="btn btn-danger hidden" id="btn-fb-disconnect">🔌 Disconnect Facebook</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ========================================== -->
+                <!-- TAB 2: SCRAPE COMMENTS -->
+                <!-- ========================================== -->
+                <section id="tab-scrape" class="tab-content">
+                    <h2>🔍 Scrape Social Media Comments</h2>
+                    <p class="section-desc">Target official accounts or posts, extract comments, and identify prospects expressing interest.</p>
+                    
+                    <div class="split-layout">
+                        <div class="card">
+                            <h3>🎯 Scraping Setup</h3>
+                            
+                            <div class="form-group">
+                                <label for="scrape-domain">🌐 Select Industry Domain</label>
+                                <select id="scrape-domain">
+                                    {% for domain in domains %}
+                                    <option value="{{ domain }}">{{ domain }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>📡 Target Platform</label>
+                                <div class="radio-group">
+                                    <label><input type="radio" name="scrape-platform" value="Instagram" checked> Instagram</label>
+                                    <label><input type="radio" name="scrape-platform" value="Facebook"> Facebook</label>
+                                </div>
+                            </div>
+
+                            <div class="split-form">
+                                <div class="form-group">
+                                    <label for="scrape-posts">Posts to Scan</label>
+                                    <input type="number" id="scrape-posts" value="10" min="1" max="30">
+                                </div>
+                                <div class="form-group">
+                                    <label for="scrape-comments">Max Comments</label>
+                                    <input type="number" id="scrape-comments" value="100" min="10" max="500">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h3>👥 Target Official Accounts</h3>
+                            <p class="text-sm">Enter Instagram usernames or Facebook URLs (one per line).</p>
+                            <textarea id="scrape-targets" rows="6" placeholder="e.g.&#10;indigo.airlines&#10;aviation_academy_india"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="action-bar">
+                        <button class="btn btn-primary large-btn" id="btn-start-scrape">⚡ Start Scraping</button>
+                        <button class="btn btn-secondary" id="btn-clear-scrape-logs">🧹 Clear Logs</button>
+                    </div>
+
+                    <!-- Live Logs -->
+                    <div class="console-container">
+                        <div class="console-header">Scrape Process Logs</div>
+                        <div class="console-log" id="scrape-console">Waiting to start...</div>
+                    </div>
+                    
+                    <!-- Results Table -->
+                    <div class="results-container hidden" id="scrape-results-container">
+                        <h3>📋 Extracted Prospects (<span id="scrape-count">0</span> found)</h3>
+                        <div class="table-responsive">
+                            <table class="data-table" id="scrape-table">
+                                <thead>
+                                    <tr>
+                                        <th>Username</th>
+                                        <th>Platform</th>
+                                        <th>Source</th>
+                                        <th>Comment</th>
+                                        <th>Score</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                        <div class="btn-group mt-1">
+                            <button class="btn btn-success" id="btn-save-scraped">💾 Save All to Database</button>
+                            <button class="btn btn-success" id="btn-export-scraped">📥 Export CSV</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ========================================== -->
+                <!-- TAB 3: SEND DMs -->
+                <!-- ========================================== -->
+                <section id="tab-dms" class="tab-content">
+                    <h2>📤 Automated Direct Message Outreach</h2>
+                    <p class="section-desc">Compose messages and direct message prospects directly from your scraper account.</p>
+                    
+                    <div class="card">
+                        <h3>💬 Compose Message</h3>
+                        <textarea id="dm-message" rows="4" placeholder="Hi {username}! We saw you were interested in our aviation academy. Let us know if you need enrollment details..."></textarea>
+                        <p class="help-text">The token {username} will be replaced automatically by the recipient's username.</p>
+                    </div>
+
+                    <div class="card mt-1">
+                        <h3>👥 Select Target Leads (Pending)</h3>
+                        <div class="table-responsive">
+                            <table class="data-table selectable-table" id="pending-dms-table">
+                                <thead>
+                                    <tr>
+                                        <th><input type="checkbox" id="dm-select-all" checked></th>
+                                        <th>ID</th>
+                                        <th>Username</th>
+                                        <th>Platform</th>
+                                        <th>Domain</th>
+                                        <th>Score</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="action-bar mt-1">
+                        <button class="btn btn-primary large-btn" id="btn-start-dms">📤 Send Auto-DMs</button>
+                        <button class="btn btn-secondary" id="btn-clear-dm-logs">🧹 Clear DM Logs</button>
+                    </div>
+
+                    <!-- DM Live Logs -->
+                    <div class="console-container mt-1">
+                        <div class="console-header">DM Outreach Logs</div>
+                        <div class="console-log" id="dm-console">Ready.</div>
+                    </div>
+                </section>
+
+                <!-- ========================================== -->
+                <!-- TAB 4: LEAD HISTORY -->
+                <!-- ========================================== -->
+                <section id="tab-history" class="tab-content">
+                    <h2>📋 Stored Lead Intelligence</h2>
+                    <p class="section-desc">Search, filter, and review all scraped prospects stored in the database.</p>
+                    
+                    <div class="filter-bar card">
+                        <div class="form-group">
+                            <label>Domain</label>
+                            <select id="hist-filter-domain">
+                                <option value="All">All</option>
+                                {% for domain in domains %}
+                                <option value="{{ domain }}">{{ domain }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Platform</label>
+                            <select id="hist-filter-platform">
+                                <option value="All">All</option>
+                                <option value="Instagram">Instagram</option>
+                                <option value="Facebook">Facebook</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>DM Status</label>
+                            <select id="hist-filter-dm">
+                                <option value="All">All</option>
+                                <option value="DM Sent">DM Sent</option>
+                                <option value="Pending DM">Pending DM</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="card mt-1">
+                        <div class="table-responsive">
+                            <table class="data-table" id="history-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Username</th>
+                                        <th>Platform</th>
+                                        <th>Domain</th>
+                                        <th>Score</th>
+                                        <th>DM Sent</th>
+                                        <th>Scraped At</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                        <div class="btn-group mt-1">
+                            <button class="btn btn-success" id="btn-export-history">📥 Download History CSV</button>
+                            <button class="btn btn-danger" id="btn-clear-history">🗑️ Clear Database</button>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+    
+    <script src="/static/js/app.js?v=3"></script>
+</body>
+</html>
