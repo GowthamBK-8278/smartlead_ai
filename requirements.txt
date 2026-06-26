@@ -9,3 +9,4 @@ instagrapi
 playwright
 requests
 flask
+gunicorn
